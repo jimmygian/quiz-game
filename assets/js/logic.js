@@ -4,9 +4,10 @@ const startQuizButton = document.querySelector('#start');
 const endScreenDiv = document.querySelector('#end-screen');
 const questionsDiv = document.querySelector('#questions')
 const feedbackDiv = document.querySelector('#feedback');
+const timeDiv = document.querySelector('.timer');
 const timeSpan = document.querySelector('#time');
 
-
+let countdown = 120;
 
 // ***FUNCTIONS*** //
 
@@ -28,6 +29,23 @@ function updateElementVisibility() {
         }
     });
 }
+
+
+// Starts Countdown
+function startCountdown() {
+    timeSpan.innerText = countdown;
+    countdown--;
+    
+    // If it reaches 0, call gameOver()
+    
+    setInterval(function() {
+        timeSpan.innerText = countdown;
+        countdown--;
+    } ,1000);
+
+}
+
+
 
 // Generates Question
 function generateQuestion() {
@@ -75,7 +93,7 @@ function generateQuestion() {
             } else {
                 console.log("WRONG!!!");
                 // Remove time from timer
-                // Update feedback
+                countdown -= 10;
             }
         }
     });
@@ -91,6 +109,12 @@ startQuizButton.addEventListener('click', function(e) {
     const parentDiv = startQuizButton.parentElement;
     parentDiv.dataset.state = "hide";
     questionsDiv.dataset.state = "show";
+    timeDiv.dataset.state = "show";
+
+    // Update visibility
     updateElementVisibility();
+    
+    // Start Game
+    startCountdown();
     generateQuestion();
 });
