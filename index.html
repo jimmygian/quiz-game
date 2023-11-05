@@ -10,12 +10,17 @@
   </head>
 
   <body>
-    <div class="scores"><a href="highscores.html">View Highscores</a></div>
+    <div class="scores" data-state="show">
+      <a href="highscores.html">View Highscores</a>
+    </div>
 
-    <div class="timer">Time: <span id="time">0</span></div>
+    <div class="timer" data-state="show">
+      Time: 
+      <span id="time">0</span>
+    </div>
 
     <div class="wrapper">
-      <div id="start-screen" class="start">
+      <div id="start-screen" class="start" data-state="show">
         <h1>Coding Quiz Challenge</h1>
         <p>
           Try to answer the following code-related questions within the time
@@ -25,12 +30,12 @@
         <button id="start">Start Quiz</button>
       </div>
 
-      <div id="questions" class="hide">
+      <div id="questions" class="hide" data-state="hide">
         <h2 id="question-title"></h2>
         <div id="choices" class="choices"></div>
       </div>
 
-      <div id="end-screen" class="hide">
+      <div id="end-screen" class="hide" data-state="hide">
         <h2>All done!</h2>
         <p>Your final score is <span id="final-score"></span>.</p>
         <p>
@@ -39,7 +44,7 @@
         </p>
       </div>
 
-      <div id="feedback" class="feedback hide"></div>
+      <div id="feedback" class="feedback hide" data-state="hide"></div>
     </div>
 
     <script src="./assets/js/questions.js"></script>
