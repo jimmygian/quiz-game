@@ -1,13 +1,28 @@
 // ***GLOBAL SELECTORS*** //
 
 const startQuizButton = document.querySelector('#start');
+
 const endScreenDiv = document.querySelector('#end-screen');
+const endScreenHeader = endScreenDiv.querySelector('h2');
+
 const questionsDiv = document.querySelector('#questions')
+const questionText = questionsDiv.querySelector('h2');
+const choices = document.querySelector('#choices');
+
 const feedbackDiv = document.querySelector('#feedback');
+
 const timeDiv = document.querySelector('.timer');
 const timeSpan = document.querySelector('#time');
 
-let countdown = 120;
+const finalScore = document.querySelector('#final-score');
+
+const INIT_COUNTDOWN = 60;
+
+let countdown = INIT_COUNTDOWN;
+let timerStarted = false;
+let questionNo = 0;
+let score = 0;
+
 
 // ***FUNCTIONS*** //
 
@@ -31,37 +46,120 @@ function updateElementVisibility() {
 }
 
 
-// Starts Countdown
-function startCountdown() {
+// Starts Timer
+function startTimer() {
+    timerStarted = true;
     timeSpan.innerText = countdown;
     countdown--;
     
-    // If it reaches 0, call gameOver()
-    
+    // If it reaches 0, call finishGame()
+
     setInterval(function() {
+        if (countdown < 0) {
+            endScreenHeader.innerText = 'Time\'s Up!'
+            return gameOver();
+        }
+        
+        console.log(countdown)
         timeSpan.innerText = countdown;
         countdown--;
     } ,1000);
+}
+
+// Stops Timer
+function stopTimer() {
+    timeDiv.dataset.state = 'hide';
+    timerStarted = false;
+    countdown = INIT_COUNTDOWN;
+}
+
+// Updates feedback
+function getFeedback(isCorrect) {
+    // Selects feedback div
+    const feedback = document.querySelector('#feedback')
+    
+    // Logic
+    if (isCorrect) {
+        feedback.innerText = 'Correct!';
+        score+= 10
+    } else {
+        feedback.innerText = 'Wrong!';
+        countdown -= 10;
+    }
+    
+    // Shows feedback div
+    feedback.dataset.state = 'show';
+    updateElementVisibility();
+
+    // Hide feedback
+    setTimeout(function() {
+        // Shows feedback div
+        feedback.dataset.state = 'hide';
+        updateElementVisibility();
+    }, 2000);
+}
+
+// Removes questions
+function removeChildren(element) {
+    while (element.firstChild) {
+        element.removeChild(element.firstChild);
+    }
+}
+
+// Generates Next Question, if any
+function nextQuestion() {
+    
+    console.log('questionNo:', questionNo)
+
+    if  (questionNo < questions.length) {
+        generateQuestion();
+    } else {
+        gameOver();
+    }
+    return;
+}
+
+function gameOver() {
+    endScreenDiv.dataset.state = 'show';
+    questionsDiv.dataset.state = "hide";
+    timeDiv.dataset.state = "hide";
+    updateElementVisibility();
+
+    finalScore.innerText = score;
+
 
 }
 
 
+// Function to handle button clicks
+function handleChoice(e) {
+    const clickedBtn = e.target;
+
+    // Runs only if one of the buttons were clicked and not just the parentDiv
+    if (clickedBtn.tagName === 'BUTTON') {
+        const selectedAnswerIndex = parseInt(clickedBtn.getAttribute('name'));
+
+        if (selectedAnswerIndex === questions[questionNo].correctAnswerIndex) {
+            getFeedback(true);
+        } else {
+            getFeedback(false);
+        }
+
+        questionNo++;
+        nextQuestion();
+    }
+}
+
 
 // Generates Question
 function generateQuestion() {
-    console.log('I will generate a question');
 
-    // Selectors
-    const questionText = questionsDiv.querySelector('h2');
-    console.log(questionText);
-    const choices = document.querySelector('#choices');
-    console.log(choices);
+    // Clear Screen
+    removeChildren(questionText);
+    removeChildren(choices);
 
-    // index
-    index = 0;
-
-    // Update question
-    question = questions[index];
+    // Updates question
+    let question = questions[questionNo];
     questionText.innerText = question.question;
     
     // Create buttons
@@ -79,24 +177,12 @@ function generateQuestion() {
         choices.append(choiceBtn);
     }
 
-    choices.addEventListener('click', function(e){
-        console.log(e.target);
-        clickedBtn = e.target;
+    choices.removeEventListener('click', handleChoice);
+    choices.addEventListener('click', handleChoice);
 
-        // Runs only if one of the buttons were clicked and not just the parentDiv
-        if (clickedBtn.tagName === 'BUTTON') {
-            const selectedAnswerIndex = parseInt(clickedBtn.getAttribute('name'));
 
-            if (selectedAnswerIndex === question.correctAnswerIndex) {
-                console.log("CORRECT!!!");
-                // Update feedback
-            } else {
-                console.log("WRONG!!!");
-                // Remove time from timer
-                countdown -= 10;
-            }
-        }
-    });
+
+    return;
 }
 
 
@@ -111,10 +197,15 @@ startQuizButton.addEventListener('click', function(e) {
     questionsDiv.dataset.state = "show";
     timeDiv.dataset.state = "show";
 
+
     // Update visibility
     updateElementVisibility();
     
     // Start Game
-    startCountdown();
+    if (!timerStarted) {
+        startTimer();
+    }
+
+    console.log('questions.length:', questions.length);
     generateQuestion();
 });
