@@ -1,10 +1,9 @@
 // ***GLOBAL SELECTORS*** //
 
+// Start Screen
 const startQuizButton = document.querySelector('#start');
 
-const endScreenDiv = document.querySelector('#end-screen');
-const endScreenHeader = endScreenDiv.querySelector('h2');
-
+// Questions Screen
 const questionsDiv = document.querySelector('#questions')
 const questionText = questionsDiv.querySelector('h2');
 const choices = document.querySelector('#choices');
@@ -14,7 +13,13 @@ const feedbackDiv = document.querySelector('#feedback');
 const timeDiv = document.querySelector('.timer');
 const timeSpan = document.querySelector('#time');
 
+
+// End Screen
 const finalScore = document.querySelector('#final-score');
+const endScreenDiv = document.querySelector('#end-screen');
+const endScreenHeader = endScreenDiv.querySelector('h2');
+const initialsText = document.querySelector('#initials');
+const submitScoreButton = document.querySelector('#submit');
 
 const INIT_COUNTDOWN = 60;
 
@@ -66,12 +71,14 @@ function startTimer() {
     } ,1000);
 }
 
+
 // Stops Timer
 function stopTimer() {
     timeDiv.dataset.state = 'hide';
     timerStarted = false;
     countdown = INIT_COUNTDOWN;
 }
+
 
 // Updates feedback
 function getFeedback(isCorrect) {
@@ -99,12 +106,14 @@ function getFeedback(isCorrect) {
     }, 2000);
 }
 
-// Removes questions
+
+// Clears Questions
 function removeChildren(element) {
     while (element.firstChild) {
         element.removeChild(element.firstChild);
     }
 }
+
 
 // Generates Next Question, if any
 function nextQuestion() {
@@ -126,8 +135,6 @@ function gameOver() {
     updateElementVisibility();
 
     finalScore.innerText = score;
-
-
 }
 
 
@@ -208,4 +215,20 @@ startQuizButton.addEventListener('click', function(e) {
 
     console.log('questions.length:', questions.length);
     generateQuestion();
+});
+
+
+// Save Score
+submitScoreButton.addEventListener('click', function() {
+    let initials = initialsText.value;
+    console.log(initials)
+    let userScore = {}
+
+    if (initials !== '') {
+        userScore['score'] = score;
+        userScore['initials'] = initials;
+        console.log(userScore);
+    } else {
+        return;
+    }
 });
