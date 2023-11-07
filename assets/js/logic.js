@@ -27,6 +27,7 @@ let countdown = INIT_COUNTDOWN;
 let timerStarted = false;
 let questionNo = 0;
 let score = 0;
+let userScore = {};
 
 
 // ***FUNCTIONS*** //
@@ -221,14 +222,17 @@ startQuizButton.addEventListener('click', function(e) {
 // Save Score
 submitScoreButton.addEventListener('click', function() {
     let initials = initialsText.value;
-    console.log(initials)
-    let userScore = {}
+    console.log(initials);
 
     if (initials !== '') {
-        userScore['score'] = score;
-        userScore['initials'] = initials;
-        console.log(userScore);
-    } else {
-        return;
+        // Retrieves existing data from local storage OR sets it to {} if nothing can be retrieved
+        let storedData = JSON.parse(localStorage.getItem('userScore')) || {};
+
+        // Add the new data to the existing data
+        storedData[initials] = score;
+
+        // Store the merged data back in local storage
+        localStorage.setItem('userScore', JSON.stringify(storedData));
     }
+    window.location.href = 'highscores.html';
 });
