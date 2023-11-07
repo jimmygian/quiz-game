@@ -21,6 +21,11 @@ const endScreenHeader = endScreenDiv.querySelector('h2');
 const initialsText = document.querySelector('#initials');
 const submitScoreButton = document.querySelector('#submit');
 
+// Audio
+const correctAudio = new Audio('./assets/sfx/correct.wav');
+const incorrectAudio = new Audio('./assets/sfx/incorrect.wav');
+
+
 const INIT_COUNTDOWN = 60;
 
 let countdown = INIT_COUNTDOWN;
@@ -90,9 +95,11 @@ function getFeedback(isCorrect) {
     if (isCorrect) {
         feedback.innerText = 'Correct!';
         score+= 10
+        correctAudio.play();
     } else {
         feedback.innerText = 'Wrong!';
         countdown -= 10;
+        incorrectAudio.play();
     }
     
     // Shows feedback div
