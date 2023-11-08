@@ -10,9 +10,9 @@ const choices = document.querySelector('#choices');
 
 const feedbackDiv = document.querySelector('#feedback');
 
+// Timer
 const timeDiv = document.querySelector('.timer');
 const timeSpan = document.querySelector('#time');
-
 
 // End Screen
 const finalScore = document.querySelector('#final-score');
@@ -25,7 +25,7 @@ const submitScoreButton = document.querySelector('#submit');
 const correctAudio = new Audio('./assets/sfx/correct.wav');
 const incorrectAudio = new Audio('./assets/sfx/incorrect.wav');
 
-
+// Global Variables/Constants
 const INIT_COUNTDOWN = 60;
 
 let countdown = INIT_COUNTDOWN;
@@ -33,6 +33,8 @@ let timerStarted = false;
 let questionNo = 0;
 let score = 0;
 let userScore = {};
+
+
 
 
 // ***FUNCTIONS*** //
@@ -63,15 +65,13 @@ function startTimer() {
     timeSpan.innerText = countdown;
     countdown--;
     
-    // If it reaches 0, call finishGame()
-
     setInterval(function() {
+        // If it reaches 0, call gameOver()
         if (countdown < 0) {
             endScreenHeader.innerText = 'Time\'s Up!'
             return gameOver();
         }
         
-        console.log(countdown)
         timeSpan.innerText = countdown;
         countdown--;
     } ,1000);
@@ -125,8 +125,6 @@ function removeChildren(element) {
 
 // Generates Next Question, if any
 function nextQuestion() {
-    
-    console.log('questionNo:', questionNo)
 
     if  (questionNo < questions.length) {
         generateQuestion();
@@ -195,10 +193,10 @@ function generateQuestion() {
     choices.removeEventListener('click', handleChoice);
     choices.addEventListener('click', handleChoice);
 
-
-
     return;
 }
+
+
 
 
 
@@ -212,7 +210,6 @@ startQuizButton.addEventListener('click', function(e) {
     questionsDiv.dataset.state = "show";
     timeDiv.dataset.state = "show";
 
-
     // Update visibility
     updateElementVisibility();
     
@@ -221,7 +218,6 @@ startQuizButton.addEventListener('click', function(e) {
         startTimer();
     }
 
-    console.log('questions.length:', questions.length);
     generateQuestion();
 });
 
@@ -229,7 +225,6 @@ startQuizButton.addEventListener('click', function(e) {
 // Save Score
 submitScoreButton.addEventListener('click', function() {
     let initials = initialsText.value;
-    console.log(initials);
 
     if (initials !== '') {
         // Retrieves existing data from local storage OR sets it to {} if nothing can be retrieved
